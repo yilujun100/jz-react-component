@@ -1,10 +1,14 @@
 {
   "name": "@yilujun100/jz-react-component",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/yilujun100"
+    "access": "public"
   },
-  "version": "0.0.1",
-  "description": "A React component library",
+  "version": "0.1.6",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yilujun100/jz-react-component"
+  },
+  "description": "A Juzi React component library",
   "scripts": {
     "rollup": "rollup -c"
   },
