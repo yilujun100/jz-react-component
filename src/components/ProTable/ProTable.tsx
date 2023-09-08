@@ -35,9 +35,22 @@ export interface ProTableProps {
    */
   data: Array<any>;
   /**
+   * 获取 data 的方法
+   */
+  request: (params: {
+    page: number | undefined;
+    pageSize: number | undefined;
+    [key: string]: any;
+  }) => Promise<{ data: { list: any[]; total: number; }; success: boolean; }>
+  /**
+   * 是否展示分页
+   * 如果设置为 True , 那么必须设置 pagination
+   */
+  showPagination: boolean;
+  /**
    * 分页设置
    */
-  pagination: PaginationProps | boolean;
+  pagination?: PaginationProps;
   /**
    * 标题栏左侧按钮组
    */
@@ -51,16 +64,40 @@ export interface ProTableProps {
 const { Title } = Typography;
 
 const ProTable = (props: ProTableProps) => {
-  const { title, conditions, searchText, resetText, rowKey, columns, data, leftBtns, rightBtns } = props;
-  const [loading, setLoading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<PaginationProps | boolean>(props.pagination);
+  const { title, conditions, searchText, resetText, rowKey, columns, leftBtns, rightBtns, showPagination, request } = props;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState(props.data || [])
+  const [pagination, setPagination] = useState<PaginationProps>(props.pagination || {
+    sizeCanChange: true,
+    showTotal: true,
+    pageSize: 10,
+    current: 1,
+    pageSizeChangeResetCurrent: true
+  });
   const [formParams, setFormParams] = useState({});
 
   useEffect(() => {
-    setTimeout(() => {
+    if (!request) return;
+    fetchData();
+  }, [pagination.current, pagination.pageSize, JSON.stringify(formParams)]);
+
+  const fetchData = async () => {
+    const { current, pageSize } = pagination;
+    setLoading(true);
+    try {
+      const res = await request({ page: current, pageSize, ...formParams });
+      setData(res.data.list);
+      setPagination({
+        ...pagination,
+        current,
+        pageSize,
+        total: res.data.total
+      });
       setLoading(false);
-    }, 2000);
-  }, []);
+    } catch (err) {
+      console.error('Error: ', err);
+    }
+  };
 
   const renderLeftBtns = () => {
     return leftBtns?.map(btn => <Button {...btn}>{btn.label}</Button>);
@@ -71,7 +108,9 @@ const ProTable = (props: ProTableProps) => {
   };
 
   const handleSearch = (params: any) => {
-    setPagination({ ...pagination as Object, current: 1 });
+    if (showPagination) {
+      setPagination({ ...pagination as Object, current: 1 });
+    }
     setFormParams(params);
   }
 
@@ -100,7 +139,7 @@ const ProTable = (props: ProTableProps) => {
         rowKey={rowKey}
         loading={loading}
         onChange={onChangeTable}
-        pagination={pagination}
+        pagination={showPagination ? pagination : false}
         columns={columns}
         data={data}
       />

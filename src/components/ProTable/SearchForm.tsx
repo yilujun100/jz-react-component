@@ -42,7 +42,7 @@ const SearchForm = (props: SearchFormProps) => {
           {conditions.map(condition => {
             const { label, id, render } = condition;
             return (
-              <Col span={colSpan}>
+              <Col span={colSpan} key={id}>
                 <Form.Item label={label} field={id}>
                   { render ? render : (
                     <Input placeholder={`请输入${label}`} allowClear />

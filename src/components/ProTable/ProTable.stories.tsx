@@ -154,9 +154,25 @@ StaticRender.args = {
     }
   ],
   data: [
-    { id: '40088683-4187', name: '每日推荐视频集',  contentType: 0, filterType: 0, count: '1136', createdTime: 1, status: 0 }
+    // { id: '40088683-4187', name: '每日推荐视频集',  contentType: 0, filterType: 0, count: '1136', createdTime: 1, status: 0 }
   ],
-  // pagination: false
+  request: async (params) => {
+    console.log('request: ', params);
+    return await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: {
+            list: [
+              { id: '40088683-4187', name: '每日推荐视频集',  contentType: 0, filterType: 0, count: '1136', createdTime: 1, status: 0 }
+            ],
+            total: 1
+          }
+        });
+      }, 2000);
+    })
+  },
+  showPagination: true,
   pagination: {
     sizeCanChange: true,
     showTotal: true,
