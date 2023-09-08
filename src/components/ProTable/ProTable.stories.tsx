@@ -12,6 +12,15 @@ const ContentType = ['图文', '横版短视频', '竖版短视频'];
 const FilterType = ['规则筛选', '人工'];
 const Status = ['未上线', '已上线'];
 
+const generateFormModel = () => ({
+  id: '',
+  name: '',
+  contentType: undefined,
+  filterType: undefined,
+  createdTime: undefined,
+  status: undefined
+});
+
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: "ReactComponentLibrary/ProTable",
@@ -81,6 +90,8 @@ StaticRender.args = {
       />
     }
   ],
+  colSpan: 6,
+  limitNum: 3,
   searchText: '搜索',
   leftBtns: [
     { key: 'create', type: 'primary', label: '新建', icon: <IconPlus /> },
@@ -172,6 +183,7 @@ StaticRender.args = {
       }, 2000);
     })
   },
+  initialQueryParams: generateFormModel(),
   showPagination: true,
   pagination: {
     sizeCanChange: true,

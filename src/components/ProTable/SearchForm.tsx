@@ -1,9 +1,12 @@
-import React from 'react';
-import { Form, Grid, Button, Input } from '@arco-design/web-react';
-import { IconRefresh, IconSearch } from '@arco-design/web-react/icon';
+import React, { useState, useMemo } from 'react';
+import { Form, Grid, Button, Input, Space, Link } from '@arco-design/web-react';
+import { IconRefresh, IconSearch, IconUp, IconDown } from '@arco-design/web-react/icon';
+import cls from 'classnames';
 import { ConditionProps } from './ProTable';
 
 export interface SearchFormProps {
+  colSpan?: number;
+  limitNum?: number;
   conditions: ConditionProps;
   searchText?: string;
   resetText?: string;
@@ -13,11 +16,13 @@ export interface SearchFormProps {
 const { Row, Col } = Grid;
 const { useForm } = Form;
 
-const colSpan = 8;
-
 const SearchForm = (props: SearchFormProps) => {
-  const { conditions, searchText, resetText, onSearch } = props;
+  const { limitNum = 3, colSpan = 6, conditions, searchText, resetText, onSearch } = props;
   const [form] = useForm();
+  const [collapsed, setCollapsed] = useState(true);
+  const showCollapseButton = useMemo(() => {
+    return conditions.length > limitNum;
+  }, [conditions, limitNum]);
 
   const handleSubmit = () => {
     const values = form.getFieldsValue();
@@ -35,14 +40,14 @@ const SearchForm = (props: SearchFormProps) => {
         form={form}
         className="search-form"
         labelAlign="left"
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
       >
         <Row gutter={24}>
-          {conditions.map(condition => {
+          {conditions.map((condition, index) => {
             const { label, id, render } = condition;
             return (
-              <Col span={colSpan} key={id}>
+              <Col className={cls({ 'item-col-hidden': index > limitNum - 1 && collapsed })} span={colSpan} key={id}>
                 <Form.Item label={label} field={id}>
                   { render ? render : (
                     <Input placeholder={`请输入${label}`} allowClear />
@@ -51,16 +56,29 @@ const SearchForm = (props: SearchFormProps) => {
               </Col>
             );
           })}
+          <Col span={colSpan}>
+            <Space style={{ marginBottom: '20px' }}>
+              <Button type="primary" icon={<IconSearch />} onClick={handleSubmit}>
+                {searchText ? searchText : '查询'}
+              </Button>
+              <Button icon={<IconRefresh />} onClick={handleReset}>
+                {resetText ? resetText : '重置'}
+              </Button>
+              {showCollapseButton && (
+                <Link
+                  hoverable={false}
+                  onClick={() => {
+                    setCollapsed(!collapsed);
+                  }}
+                >
+                  {collapsed ? '展开' : '收起'}
+                  {collapsed ? <IconDown /> : <IconUp />}
+                </Link>
+              )}
+            </Space>
+          </Col>
         </Row>
       </Form>
-      <div className="right-button">
-        <Button type="primary" icon={<IconSearch />} onClick={handleSubmit}>
-          {searchText ? searchText : '查询'}
-        </Button>
-        <Button icon={<IconRefresh />} onClick={handleReset}>
-          {resetText ? resetText : '重置'}
-        </Button>
-      </div>
     </div>
   );
 };

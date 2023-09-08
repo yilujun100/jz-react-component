@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.1.7",
+  "version": "0.1.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/yilujun100/jz-react-component"
@@ -38,6 +38,7 @@
     "@types/jest": "^29.5.4",
     "@types/react": "^18.2.21",
     "babel-jest": "^29.6.4",
+    "classnames": "^2.3.2",
     "css-loader": "^6.8.1",
     "dayjs": "^1.11.9",
     "identity-obj-proxy": "^3.0.0",

@@ -1,9 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { TableColumnProps, PaginationProps, ButtonProps, Card, Typography, Space, Button, Table } from '@arco-design/web-react';
-import SearchForm from './SearchForm';
-import './ProTable.less';
+import React, { useState, useEffect } from "react";
+import {
+  TableColumnProps,
+  PaginationProps,
+  ButtonProps,
+  Card,
+  Typography,
+  Space,
+  Button,
+  Table,
+} from "@arco-design/web-react";
+import SearchForm from "./SearchForm";
+import "./ProTable.less";
 
-export type ConditionProps = Array<{ label: string; id: string; render?: React.ReactElement }>;
+export type ConditionProps = Array<{
+  label: string;
+  id: string;
+  render?: React.ReactElement;
+}>;
 
 export interface ProTableProps {
   /**
@@ -23,6 +36,10 @@ export interface ProTableProps {
    */
   resetText?: string;
   /**
+   * 默认查询参数
+   */
+  initialQueryParams?: { [key: string]: any };
+  /**
    * 表格行 key 的取值字段
    */
   rowKey: string;
@@ -41,7 +58,7 @@ export interface ProTableProps {
     page: number | undefined;
     pageSize: number | undefined;
     [key: string]: any;
-  }) => Promise<{ data: { list: any[]; total: number; }; success: boolean; }>
+  }) => Promise<{ data: { list: any[]; total: number }; success: boolean }>;
   /**
    * 是否展示分页
    * 如果设置为 True , 那么必须设置 pagination
@@ -59,22 +76,46 @@ export interface ProTableProps {
    * 标题栏右侧按钮组
    */
   rightBtns?: Array<ButtonProps & { key: string; label: string }>;
+  /**
+   * 筛选栏列数, 默认 4 列
+   */
+  colSpan?: number;
+  /**
+   * 筛选栏展示列数量, 默认 3 列, 剩余列隐藏
+   */
+  limitNum?: number;
 }
 
 const { Title } = Typography;
 
 const ProTable = (props: ProTableProps) => {
-  const { title, conditions, searchText, resetText, rowKey, columns, leftBtns, rightBtns, showPagination, request } = props;
+  const {
+    title,
+    conditions,
+    searchText,
+    resetText,
+    rowKey,
+    columns,
+    leftBtns,
+    rightBtns,
+    showPagination,
+    request,
+    initialQueryParams,
+    colSpan,
+    limitNum,
+  } = props;
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState(props.data || [])
-  const [pagination, setPagination] = useState<PaginationProps>(props.pagination || {
-    sizeCanChange: true,
-    showTotal: true,
-    pageSize: 10,
-    current: 1,
-    pageSizeChangeResetCurrent: true
-  });
-  const [formParams, setFormParams] = useState({});
+  const [data, setData] = useState(props.data || []);
+  const [pagination, setPagination] = useState<PaginationProps>(
+    props.pagination || {
+      sizeCanChange: true,
+      showTotal: true,
+      pageSize: 10,
+      current: 1,
+      pageSizeChangeResetCurrent: true,
+    }
+  );
+  const [formParams, setFormParams] = useState(initialQueryParams || {});
 
   useEffect(() => {
     if (!request) return;
@@ -91,49 +132,52 @@ const ProTable = (props: ProTableProps) => {
         ...pagination,
         current,
         pageSize,
-        total: res.data.total
+        total: res.data.total,
       });
       setLoading(false);
     } catch (err) {
-      console.error('Error: ', err);
+      console.error("Error: ", err);
     }
   };
 
   const renderLeftBtns = () => {
-    return leftBtns?.map(btn => <Button {...btn}>{btn.label}</Button>);
+    return leftBtns?.map((btn) => <Button {...btn}>{btn.label}</Button>);
   };
 
   const renderRightBtns = () => {
-    return rightBtns?.map(btn => <Button {...btn}>{btn.label}</Button>);
+    return rightBtns?.map((btn) => <Button {...btn}>{btn.label}</Button>);
   };
 
   const handleSearch = (params: any) => {
     if (showPagination) {
-      setPagination({ ...pagination as Object, current: 1 });
+      setPagination({ ...(pagination as Object), current: 1 });
     }
     setFormParams(params);
-  }
+  };
 
   const onChangeTable = (pagination: PaginationProps) => {
     const { current, pageSize } = pagination;
     setPagination({
       ...pagination,
       current,
-      pageSize
-    })
+      pageSize,
+    });
   };
 
   return (
     <Card>
       <Title>{title}</Title>
-      <SearchForm searchText={searchText} resetText={resetText} conditions={conditions} onSearch={handleSearch} />
+      <SearchForm
+        colSpan={colSpan}
+        limitNum={limitNum}
+        searchText={searchText}
+        resetText={resetText}
+        conditions={conditions}
+        onSearch={handleSearch}
+      />
       <div className="button-group">
-        <Space>
-          {leftBtns && leftBtns.length > 0 && renderLeftBtns()}
-        </Space>
-        <Space>
-          {rightBtns && rightBtns.length > 0 && renderRightBtns()}
-        </Space>
+        <Space>{leftBtns && leftBtns.length > 0 && renderLeftBtns()}</Space>
+        <Space>{rightBtns && rightBtns.length > 0 && renderRightBtns()}</Space>
       </div>
       <Table
         rowKey={rowKey}
