@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { FormItemProps, FormProps, FormInstance, Modal, Form, Input } from '@arco-design/web-react';
+import { FormItemProps, FormInstance, Modal, Form, Input } from '@arco-design/web-react';
 
 export interface ModalFormProps {
   /**
@@ -9,7 +9,7 @@ export interface ModalFormProps {
   /**
    * 弹窗宽度 默认 520
    */
-  width: string | number;
+  width?: string | number;
   /**
    * 用于触发弹窗打开的
    */
@@ -17,7 +17,7 @@ export interface ModalFormProps {
   /**
    * 表单项
    */
-  formItems: Array<FormItemProps & { render: JSX.Element }>;
+  formItems: Array<FormItemProps & { render?: JSX.Element }>;
   /**
    * 表单项标签文本宽度
    */
@@ -25,7 +25,7 @@ export interface ModalFormProps {
   /**
    * 表单初始值
    */
-  initialValues?: FormProps
+  initialValues?: Partial<any>;
   /**
    * 接收任意值, 返回 真值 会关掉这个弹窗
    *
@@ -38,6 +38,10 @@ export interface ModalFormProps {
    * onFinish: async () => { await save(); return false }
    */
   onFinish: (formData: any) => Promise<any>;
+  /**
+   * 弹框关闭之后的回调
+   */
+  afterClose?: () => void;
 }
 
 const FormItem = Form.Item;
@@ -52,14 +56,20 @@ const formItemLayout = {
 };
 
 const ModalForm = (props: ModalFormProps) => {
-  const { title, width, trigger, formItems, labelWidth = 90, initialValues, onFinish } = props;
+  const { title, width = 520, trigger, formItems, labelWidth = 90, initialValues, onFinish } = props;
   const [visible, setVisible] = useState<boolean>(false);
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const formRef = useRef<FormInstance>(null);
 
   const handleOk = () => {
-    setVisible(false);
+    formRef.current?.validate().then(async (values) => {
+      const result = await onFinishHandler(values);
+      return result;
+    }).catch(err => {
+      console.error('Error: ', err);
+      setVisible(false);
+    });
   };
 
   const handleCancel = () => {
@@ -97,7 +107,11 @@ const ModalForm = (props: ModalFormProps) => {
       return result;
     },
     [onFinish, setVisible]
-  )
+  );
+
+  const resetFields = () => {
+    formRef.current?.resetFields();
+  };
 
   return (
     <>
@@ -109,6 +123,11 @@ const ModalForm = (props: ModalFormProps) => {
         confirmLoading={confirmLoading}
         style={{
           width
+        }}
+        afterClose={() => {
+          resetFields();
+          setVisible(false);
+          props?.afterClose?.();
         }}
       >
         <Form
@@ -123,10 +142,10 @@ const ModalForm = (props: ModalFormProps) => {
           }}
           initialValues={initialValues}
         >
-          {formItems.map(formItem => {
+          {formItems.map((formItem, index) => {
             const { render, label, field, rules } = formItem;
             return (
-              <FormItem label={label} field={field} rules={rules}>
+              <FormItem key={index} label={label} field={field} rules={rules}>
                 {render ? render : <Input placeholder="请输入" allowClear />}
               </FormItem>
             );
