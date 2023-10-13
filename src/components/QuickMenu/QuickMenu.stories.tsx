@@ -1,14 +1,17 @@
 import React from 'react';
 import { MemoryRouter as Router, useNavigate } from 'react-router-dom';
-import { StoryFn, Meta } from '@storybook/react';
+import type { StoryFn, Meta, StoryObj } from '@storybook/react';
 import { Layout, Menu } from '@arco-design/web-react';
 import QuickMenu from './QuickMenu';
 
+type Story = StoryObj<typeof QuickMenu>;
+
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-export default {
+const meta: Meta<typeof QuickMenu> = {
   title: 'ReactComponentLibrary/QuickMenu',
   component: QuickMenu
-} as Meta<typeof QuickMenu>;
+};
+export default meta;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const SubMenu = Menu.SubMenu;
@@ -51,7 +54,7 @@ const Template: StoryFn<typeof QuickMenu> = args => (
   </Router>
 );
 
-export const Case1 = Template.bind({});
+export const Case1: Story = Template.bind({});
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 

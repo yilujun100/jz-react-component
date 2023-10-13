@@ -4,6 +4,7 @@
  * @date: 2023-10-12 16:28:09
  */
 import { ExtendedColumn } from './SortTable';
+import { IColumn } from './ColumnSettingDrawer';
 
 type HashMap = {
   [key: string | number]: number;
@@ -26,4 +27,4 @@ export const generateSortColumnIndexMap = (columns: ExtendedColumn[]) => {
  * @param n2
  * @returns
  */
-export const ascending = (n1: ExtendedColumn, n2: ExtendedColumn) => n1.sortIndex - n2.sortIndex;
+export const ascending = (n1: IColumn, n2: IColumn) => n1.sortIndex - n2.sortIndex;
