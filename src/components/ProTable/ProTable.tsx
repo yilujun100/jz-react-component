@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import {
   TableColumnProps,
   PaginationProps,
@@ -7,13 +8,13 @@ import {
   Typography,
   Space,
   Button,
-  Table,
-} from "@arco-design/web-react";
-import SearchForm from "./SearchForm";
-import "./ProTable.less";
+  Table
+} from '@arco-design/web-react';
+import SearchForm from './SearchForm';
+import './ProTable.less';
 
 export type ConditionProps = Array<{
-  label: string;
+  label: string | ReactNode;
   id: string;
   render?: React.ReactElement;
 }>;
@@ -102,7 +103,7 @@ const ProTable = (props: ProTableProps) => {
     request,
     initialQueryParams,
     colSpan,
-    limitNum,
+    limitNum
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState(props.data || []);
@@ -112,7 +113,7 @@ const ProTable = (props: ProTableProps) => {
       showTotal: true,
       pageSize: 10,
       current: 1,
-      pageSizeChangeResetCurrent: true,
+      pageSizeChangeResetCurrent: true
     }
   );
   const [formParams, setFormParams] = useState(initialQueryParams || {});
@@ -132,20 +133,20 @@ const ProTable = (props: ProTableProps) => {
         ...pagination,
         current,
         pageSize,
-        total: res.data.total,
+        total: res.data.total
       });
       setLoading(false);
     } catch (err) {
-      console.error("Error: ", err);
+      console.error('Error: ', err);
     }
   };
 
   const renderLeftBtns = () => {
-    return leftBtns?.map((btn) => <Button {...btn}>{btn.label}</Button>);
+    return leftBtns?.map(btn => <Button {...btn}>{btn.label}</Button>);
   };
 
   const renderRightBtns = () => {
-    return rightBtns?.map((btn) => <Button {...btn}>{btn.label}</Button>);
+    return rightBtns?.map(btn => <Button {...btn}>{btn.label}</Button>);
   };
 
   const handleSearch = (params: any) => {
@@ -160,7 +161,7 @@ const ProTable = (props: ProTableProps) => {
     setPagination({
       ...pagination,
       current,
-      pageSize,
+      pageSize
     });
   };
 
