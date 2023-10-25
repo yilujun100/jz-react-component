@@ -36,22 +36,14 @@ const SearchForm = (props: SearchFormProps) => {
 
   return (
     <div className="search-form-wrapper">
-      <Form
-        form={form}
-        className="search-form"
-        labelAlign="left"
-        labelCol={{ span: 7 }}
-        wrapperCol={{ span: 17 }}
-      >
+      <Form form={form} className="search-form" labelAlign="left" labelCol={{ span: 7 }} wrapperCol={{ span: 17 }}>
         <Row gutter={24}>
           {conditions.map((condition, index) => {
-            const { label, id, render } = condition;
+            const { label, id, placeholder, render } = condition;
             return (
               <Col className={cls({ 'item-col-hidden': index > limitNum - 1 && collapsed })} span={colSpan} key={id}>
                 <Form.Item label={label} field={id}>
-                  { render ? render : (
-                    <Input placeholder={`请输入${label}`} allowClear />
-                  ) }
+                  {render ? render : <Input placeholder={placeholder ? placeholder : `请输入${label}`} allowClear />}
                 </Form.Item>
               </Col>
             );

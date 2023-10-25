@@ -16,6 +16,7 @@ import './ProTable.less';
 export type ConditionProps = Array<{
   label: string | ReactNode;
   id: string;
+  placeholder?: string;
   render?: React.ReactElement;
 }>;
 
@@ -23,7 +24,7 @@ export interface ProTableProps {
   /**
    * 表格标题
    */
-  title: string;
+  title?: string;
   /**
    * 查询条件
    */
@@ -48,6 +49,13 @@ export interface ProTableProps {
    * 表格列
    */
   columns: TableColumnProps[];
+  /**
+   * 设置 x 轴或 y 轴的滚动
+   */
+  scroll?: {
+    x?: number | string | boolean;
+    y?: number | string | boolean;
+  };
   /**
    * 表格数据
    */
@@ -97,6 +105,7 @@ const ProTable = (props: ProTableProps) => {
     resetText,
     rowKey,
     columns,
+    scroll,
     leftBtns,
     rightBtns,
     showPagination,
@@ -167,7 +176,7 @@ const ProTable = (props: ProTableProps) => {
 
   return (
     <Card>
-      <Title>{title}</Title>
+      {title && <Title heading={6}>{title}</Title>}
       <SearchForm
         colSpan={colSpan}
         limitNum={limitNum}
@@ -187,6 +196,7 @@ const ProTable = (props: ProTableProps) => {
         pagination={showPagination ? pagination : false}
         columns={columns}
         data={data}
+        scroll={scroll || { x: false, y: false }}
       />
     </Card>
   );

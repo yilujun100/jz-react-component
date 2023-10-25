@@ -43,6 +43,11 @@ StaticRender.args = {
   title: '查询表格',
   conditions: [
     { id: 'id', label: '集合编号' },
+    {
+      id: 'modifySalesman',
+      label: <span style={{ marginLeft: '-12px' }}>修改业务员</span>,
+      placeholder: '请输入修改业务员'
+    },
     { id: 'name', label: '集合名称' },
     {
       id: 'contentType',
@@ -114,33 +119,56 @@ StaticRender.args = {
     {
       title: '集合编号',
       dataIndex: 'id',
+      width: 200,
       render: value => <Text copyable>{value}</Text>
     },
     {
       title: '集合名称',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      width: 160
     },
     {
       title: '内容体裁',
       dataIndex: 'contentType',
+      width: 100,
       render: value => <div className="content-type">{ContentType[value]}</div>
     },
     {
       title: '筛选方式',
       dataIndex: 'filterType',
+      width: 100,
       render: value => FilterType[value]
     },
     {
       title: '内容量',
       dataIndex: 'count',
+      width: 100,
       sorter: (a, b) => a.count - b.count,
       render(x) {
         return Number(x).toLocaleString();
       }
     },
     {
+      title: '创建人',
+      dataIndex: 'createName',
+      width: 120
+    },
+    {
       title: '创建时间',
       dataIndex: 'createdTime',
+      width: 180,
+      render: x => dayjs().subtract(x, 'days').format('YYYY-MM-DD HH:mm:ss'),
+      sorter: (a, b) => b.createdTime - a.createdTime
+    },
+    {
+      title: '修改人',
+      dataIndex: 'updateName',
+      width: 120
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createdTime',
+      width: 180,
       render: x => dayjs().subtract(x, 'days').format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a, b) => b.createdTime - a.createdTime
     },
@@ -168,6 +196,7 @@ StaticRender.args = {
   data: [
     // { id: '40088683-4187', name: '每日推荐视频集',  contentType: 0, filterType: 0, count: '1136', createdTime: 1, status: 0 }
   ],
+  scroll: { x: 1500 },
   request: async params => {
     console.log('request: ', params);
     return await new Promise((resolve, reject) => {
