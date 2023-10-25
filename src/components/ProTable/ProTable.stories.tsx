@@ -1,5 +1,5 @@
-import React from 'react';
-import { Select, Typography, Badge, Button, DatePicker } from '@arco-design/web-react';
+import React, { useState } from 'react';
+import { Space, Select, Typography, Badge, Button, DatePicker } from '@arco-design/web-react';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
 import type { StoryFn, Meta, StoryObj } from '@storybook/react';
 import dayjs from 'dayjs';
@@ -31,7 +31,25 @@ const meta: Meta<typeof ProTable> = {
 export default meta;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: StoryFn<typeof ProTable> = args => <ProTable {...args} />;
+const Template: StoryFn<typeof ProTable> = args => {
+  const [manualRequest, setManualRequest] = useState(false);
+  console.log('render Template: ', manualRequest);
+  return (
+    <Space direction="vertical">
+      <Button type="primary" onClick={() => setManualRequest(true)}>
+        Trigger Update
+      </Button>
+      <ProTable
+        manualRequest={manualRequest}
+        onLoad={resData => {
+          console.log('onLoad: ', resData);
+          setManualRequest(false);
+        }}
+        {...args}
+      />
+    </Space>
+  );
+};
 
 export const StaticRender: Story = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
@@ -167,7 +185,7 @@ StaticRender.args = {
     },
     {
       title: '创建时间',
-      dataIndex: 'createdTime',
+      dataIndex: 'updatedTime',
       width: 180,
       render: x => dayjs().subtract(x, 'days').format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a, b) => b.createdTime - a.createdTime

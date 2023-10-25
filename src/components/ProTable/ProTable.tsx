@@ -69,6 +69,15 @@ export interface ProTableProps {
     [key: string]: any;
   }) => Promise<{ data: { list: any[]; total: number }; success: boolean }>;
   /**
+   * 是否手动触发请求
+   */
+  manualRequest?: boolean;
+  /**
+   * 数据加载完成之后触发
+   * @returns
+   */
+  onLoad?: (responseData: any) => void;
+  /**
    * 是否展示分页
    * 如果设置为 True , 那么必须设置 pagination
    */
@@ -110,6 +119,8 @@ const ProTable = (props: ProTableProps) => {
     rightBtns,
     showPagination,
     request,
+    manualRequest,
+    onLoad,
     initialQueryParams,
     colSpan,
     limitNum
@@ -132,6 +143,13 @@ const ProTable = (props: ProTableProps) => {
     fetchData();
   }, [pagination.current, pagination.pageSize, JSON.stringify(formParams)]);
 
+  useEffect(() => {
+    // 手动模式触发更新
+    if (manualRequest) {
+      refresh();
+    }
+  }, [manualRequest]);
+
   const fetchData = async () => {
     const { current, pageSize } = pagination;
     setLoading(true);
@@ -145,9 +163,14 @@ const ProTable = (props: ProTableProps) => {
         total: res.data.total
       });
       setLoading(false);
+      onLoad?.(res.data);
     } catch (err) {
       console.error('Error: ', err);
     }
+  };
+
+  const refresh = () => {
+    fetchData();
   };
 
   const renderLeftBtns = () => {
@@ -173,6 +196,8 @@ const ProTable = (props: ProTableProps) => {
       pageSize
     });
   };
+
+  // console.log('render ProTable: ', manualRequest);
 
   return (
     <Card>
