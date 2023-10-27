@@ -1,5 +1,6 @@
+import type { ReactNode, RefObject } from 'react';
 import React, { useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
+import type { FormInstance } from '@arco-design/web-react';
 import {
   TableColumnProps,
   PaginationProps,
@@ -41,6 +42,10 @@ export interface ProTableProps {
    * 默认查询参数
    */
   initialQueryParams?: { [key: string]: any };
+  /**
+   * 获取查询表单的 form 实例
+   */
+  formRef?: RefObject<{ form: FormInstance }>;
   /**
    * 表格行 key 的取值字段
    */
@@ -123,7 +128,8 @@ const ProTable = (props: ProTableProps) => {
     onLoad,
     initialQueryParams,
     colSpan,
-    limitNum
+    limitNum,
+    formRef
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState(props.data || []);
@@ -209,6 +215,7 @@ const ProTable = (props: ProTableProps) => {
         resetText={resetText}
         conditions={conditions}
         onSearch={handleSearch}
+        ref={formRef!}
       />
       <div className="button-group">
         <Space>{leftBtns && leftBtns.length > 0 && renderLeftBtns()}</Space>

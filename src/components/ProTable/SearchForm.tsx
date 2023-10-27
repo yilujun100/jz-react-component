@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import type { ForwardRefRenderFunction } from 'react';
+import React, { useState, useMemo, forwardRef, useImperativeHandle } from 'react';
+import type { FormInstance } from '@arco-design/web-react';
 import { Form, Grid, Button, Input, Space, Link } from '@arco-design/web-react';
 import { IconRefresh, IconSearch, IconUp, IconDown } from '@arco-design/web-react/icon';
 import cls from 'classnames';
@@ -13,10 +15,17 @@ export interface SearchFormProps {
   onSearch: (values: Record<string, any>) => void;
 }
 
+type SearchFormHandle = {
+  form: FormInstance<any>;
+};
+
 const { Row, Col } = Grid;
 const { useForm } = Form;
 
-const SearchForm = (props: SearchFormProps) => {
+const SearchForm: ForwardRefRenderFunction<SearchFormHandle, SearchFormProps> = (props, ref) => {
+  useImperativeHandle(ref, () => ({
+    form
+  }));
   const { limitNum = 3, colSpan = 6, conditions, searchText, resetText, onSearch } = props;
   const [form] = useForm();
   const [collapsed, setCollapsed] = useState(true);
@@ -75,4 +84,4 @@ const SearchForm = (props: SearchFormProps) => {
   );
 };
 
-export default SearchForm;
+export default forwardRef(SearchForm);

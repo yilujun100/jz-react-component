@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import type { FormInstance } from '@arco-design/web-react';
 import { Space, Select, Typography, Badge, Button, DatePicker } from '@arco-design/web-react';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
 import type { StoryFn, Meta, StoryObj } from '@storybook/react';
@@ -33,10 +34,17 @@ export default meta;
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: StoryFn<typeof ProTable> = args => {
   const [manualRequest, setManualRequest] = useState(false);
+  const formRef = useRef<{ form: FormInstance }>(null);
   console.log('render Template: ', manualRequest);
   return (
     <Space direction="vertical">
-      <Button type="primary" onClick={() => setManualRequest(true)}>
+      <Button
+        type="primary"
+        onClick={() => {
+          console.log('formRef: ', formRef.current?.form.getFieldsValue());
+          setManualRequest(true);
+        }}
+      >
         Trigger Update
       </Button>
       <ProTable
@@ -45,6 +53,7 @@ const Template: StoryFn<typeof ProTable> = args => {
           console.log('onLoad: ', resData);
           setManualRequest(false);
         }}
+        formRef={formRef}
         {...args}
       />
     </Space>
