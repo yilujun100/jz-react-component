@@ -1,6 +1,6 @@
 import type { ReactNode, RefObject } from 'react';
 import React, { useState, useEffect } from 'react';
-import type { FormInstance } from '@arco-design/web-react';
+import type { FormInstance, TableRowSelectionProps } from '@arco-design/web-react';
 import {
   TableColumnProps,
   PaginationProps,
@@ -94,7 +94,7 @@ export interface ProTableProps {
   /**
    * 标题栏左侧按钮组
    */
-  leftBtns?: Array<ButtonProps & { key: string; label: string }>;
+  leftBtns?: Array<ButtonProps & { key: string; label: string; render?: React.ReactElement; }>;
   /**
    * 标题栏右侧按钮组
    */
@@ -107,6 +107,10 @@ export interface ProTableProps {
    * 筛选栏展示列数量, 默认 3 列, 剩余列隐藏
    */
   limitNum?: number;
+  /**
+   * 表格行是否可选
+   */
+  propsRowSelection?: TableRowSelectionProps
 }
 
 const { Title } = Typography;
@@ -129,7 +133,8 @@ const ProTable = (props: ProTableProps) => {
     initialQueryParams,
     colSpan,
     limitNum,
-    formRef
+    formRef,
+    propsRowSelection
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState(props.data || []);
@@ -143,6 +148,10 @@ const ProTable = (props: ProTableProps) => {
     }
   );
   const [formParams, setFormParams] = useState(initialQueryParams || {});
+  /** 单选多选相关逻辑 */
+  const [selectedRowKeys, setSelectedRowKeys] = useState<
+    (string | number)[] | undefined
+  >(propsRowSelection ? propsRowSelection?.selectedRowKeys || [] : undefined);
 
   useEffect(() => {
     if (!request) return;
@@ -180,7 +189,7 @@ const ProTable = (props: ProTableProps) => {
   };
 
   const renderLeftBtns = () => {
-    return leftBtns?.map(btn => <Button {...btn}>{btn.label}</Button>);
+    return leftBtns?.map(btn => btn.render ? btn.render : <Button {...btn}>{btn.label}</Button>);
   };
 
   const renderRightBtns = () => {
@@ -202,6 +211,17 @@ const ProTable = (props: ProTableProps) => {
       pageSize
     });
   };
+
+  const rowSelection: TableRowSelectionProps = {
+    selectedRowKeys,
+    ...propsRowSelection,
+    onChange: (selectedRowKeys, selectedRows) => {
+      if (propsRowSelection && propsRowSelection.onChange) {
+        propsRowSelection.onChange(selectedRowKeys, selectedRows);
+      }
+      setSelectedRowKeys(selectedRowKeys);
+    }
+  }
 
   // console.log('render ProTable: ', manualRequest);
 
@@ -229,6 +249,7 @@ const ProTable = (props: ProTableProps) => {
         columns={columns}
         data={data}
         scroll={scroll || { x: false, y: false }}
+        rowSelection={propsRowSelection ? rowSelection : undefined}
       />
     </Card>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import type { FormInstance } from '@arco-design/web-react';
-import { Space, Select, Typography, Badge, Button, DatePicker } from '@arco-design/web-react';
+import { Space, Select, Typography, Badge, Button, DatePicker, Dropdown, Menu } from '@arco-design/web-react';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
 import type { StoryFn, Meta, StoryObj } from '@storybook/react';
 import dayjs from 'dayjs';
@@ -138,7 +138,31 @@ StaticRender.args = {
   searchText: '搜索',
   leftBtns: [
     { key: 'create', type: 'primary', label: '新建', icon: <IconPlus /> },
-    { key: 'import', label: '批量导入' }
+    { key: 'import', label: '批量导入' },
+    { key: 'importExport',
+      label: '导入导出',
+      render: (
+        <Dropdown
+          droplist={
+            <Menu>
+              <Menu.Item key="downloadTpl">
+                下载导入模板
+              </Menu.Item>
+              <Menu.Item key="import">
+                导入
+              </Menu.Item>
+              <Menu.Item key="export">
+                导出
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <Button type="primary">
+            导入导出
+          </Button>
+        </Dropdown>
+      )
+    }
   ],
   rightBtns: [{ key: 'download', label: '下载', icon: <IconDownload /> }],
   rowKey: 'id',
@@ -256,5 +280,11 @@ StaticRender.args = {
     pageSize: 10,
     current: 1,
     pageSizeChangeResetCurrent: true
+  },
+  propsRowSelection: {
+    type: 'checkbox',
+    onChange: selectedRowKeys => {
+      console.log('propsRowSelection onChange: ', selectedRowKeys);
+    }
   }
 };
