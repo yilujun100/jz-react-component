@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FormItemProps, FormInstance, Modal, Form, Input } from '@arco-design/web-react';
 
 export interface ModalFormProps {
@@ -13,7 +13,17 @@ export interface ModalFormProps {
   /**
    * 用于触发弹窗打开的
    */
-  trigger: JSX.Element;
+  trigger?: JSX.Element;
+  /**
+   * 是否打开[受控]
+   */
+  open?: boolean;
+  /**
+   * visible 改变时触发
+   * @param open
+   * @returns
+   */
+  onOpenChange?: (open: boolean) => void;
   /**
    * 表单项
    */
@@ -56,24 +66,47 @@ const formItemLayout = {
 };
 
 const ModalForm = (props: ModalFormProps) => {
-  const { title, width = 520, trigger, formItems, labelWidth = 90, initialValues, onFinish } = props;
-  const [visible, setVisible] = useState<boolean>(false);
+  const {
+    title,
+    width = 520,
+    trigger,
+    open: propsOpen,
+    formItems,
+    labelWidth = 90,
+    initialValues,
+    onFinish,
+    onOpenChange
+  } = props;
+  const [open, setOpen] = useState<boolean>(false);
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const formRef = useRef<FormInstance>(null);
 
+  useEffect(() => {
+    if (propsOpen) {
+      setOpen(true);
+    }
+  }, [propsOpen]);
+
+  useEffect(() => {
+    onOpenChange?.(open);
+  }, [open]);
+
   const handleOk = () => {
-    formRef.current?.validate().then(async (values) => {
-      const result = await onFinishHandler(values);
-      return result;
-    }).catch(err => {
-      console.error('Error: ', err);
-      setVisible(false);
-    });
+    formRef.current
+      ?.validate()
+      .then(async values => {
+        const result = await onFinishHandler(values);
+        return result;
+      })
+      .catch(err => {
+        console.error('Error: ', err);
+        setOpen(false);
+      });
   };
 
   const handleCancel = () => {
-    setVisible(false);
+    setOpen(false);
   };
 
   const triggerDom = useMemo(() => {
@@ -83,11 +116,11 @@ const ModalForm = (props: ModalFormProps) => {
       key: 'trigger',
       ...trigger.props,
       onClick: async (e: any) => {
-        setVisible(!visible);
+        setOpen(!open);
         trigger.props?.onClick?.(e);
       }
-    })
-  }, [trigger]);
+    });
+  }, [trigger, open, setOpen]);
 
   const onFinishHandler = useCallback(
     async (values: Record<string, any>) => {
@@ -102,11 +135,11 @@ const ModalForm = (props: ModalFormProps) => {
       const result = await response;
       // 返回真值, 关闭弹窗
       if (result) {
-        setVisible(false);
+        setOpen(false);
       }
       return result;
     },
-    [onFinish, setVisible]
+    [onFinish, setOpen]
   );
 
   const resetFields = () => {
@@ -116,7 +149,7 @@ const ModalForm = (props: ModalFormProps) => {
   return (
     <>
       <Modal
-        visible={visible}
+        visible={open}
         title={<div style={{ textAlign: 'left' }}>{title}</div>}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -126,7 +159,7 @@ const ModalForm = (props: ModalFormProps) => {
         }}
         afterClose={() => {
           resetFields();
-          setVisible(false);
+          setOpen(false);
           props?.afterClose?.();
         }}
       >

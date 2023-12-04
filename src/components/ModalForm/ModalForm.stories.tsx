@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Select, Typography, Button, Message } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
 import type { StoryFn, Meta, StoryObj } from '@storybook/react';
@@ -21,7 +21,19 @@ const meta: Meta<typeof ModalForm> = {
 export default meta;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: StoryFn<typeof ModalForm> = args => <ModalForm {...args} />;
+const Template: StoryFn<typeof ModalForm> = args => {
+  const [visible, setVisible] = useState(false);
+
+  // console.log('ModalForm render: ', visible);
+  return (
+    <>
+      <Button type="primary" onClick={() => setVisible(!visible)}>
+        受控模式
+      </Button>
+      <ModalForm {...args} open={visible} onOpenChange={setVisible} />
+    </>
+  );
+};
 
 export const StaticRender: Story = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
@@ -36,11 +48,11 @@ const waitTime = (time: number = 100) => {
 
 StaticRender.args = {
   title: '新建表单',
-  trigger: (
+  /* trigger: (
     <Button type="primary" icon={<IconPlus />}>
       新建表单
     </Button>
-  ),
+  ), */
   formItems: [
     { label: '集合编号', field: 'id', rules: [{ required: true, message: '请输入集合编号' }] },
     { label: '集合名称', field: 'name', rules: [{ required: true, message: '请输入集合名称' }] },
