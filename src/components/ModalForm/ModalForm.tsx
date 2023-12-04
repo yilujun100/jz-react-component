@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { FormItemProps, FormInstance, Modal, Form, Input } from '@arco-design/web-react';
+import { FormItemProps, FormInstance, Grid, Modal, Form, Input } from '@arco-design/web-react';
 
 export interface ModalFormProps {
   /**
@@ -28,6 +28,10 @@ export interface ModalFormProps {
    * 表单项
    */
   formItems: Array<FormItemProps & { render?: JSX.Element }>;
+  /**
+   * 表单列
+   */
+  formCols?: number;
   /**
    * 表单项标签文本宽度
    */
@@ -72,6 +76,7 @@ const ModalForm = (props: ModalFormProps) => {
     trigger,
     open: propsOpen,
     formItems,
+    formCols,
     labelWidth = 90,
     initialValues,
     onFinish,
@@ -101,7 +106,6 @@ const ModalForm = (props: ModalFormProps) => {
       })
       .catch(err => {
         console.error('Error: ', err);
-        setOpen(false);
       });
   };
 
@@ -146,6 +150,41 @@ const ModalForm = (props: ModalFormProps) => {
     formRef.current?.resetFields();
   };
 
+  const contentRender: () => any = () => {
+    if (formCols && formCols > 1) {
+      const _span = 24 / formCols;
+      const _rows = Math.ceil(formItems.length / formCols);
+      const arrayChunk = (arr: Array<any>, n: number) => {
+        const array = arr.slice();
+        const chunks = [];
+        while (array.length) chunks.push(array.splice(0, n));
+        return chunks;
+      };
+      return arrayChunk([...Array(formItems.length).keys()], formCols).map((row, i) => (
+        <Grid.Row key={i} gutter={12}>
+          {row.map(colIdx => {
+            const { render, label, field, rules } = formItems[colIdx];
+            return (
+              <Grid.Col key={colIdx} span={_span}>
+                <FormItem label={label} field={field} rules={rules}>
+                  {render ? render : <Input placeholder="请输入" allowClear />}
+                </FormItem>
+              </Grid.Col>
+            );
+          })}
+        </Grid.Row>
+      ));
+    }
+    return formItems.map((formItem, index) => {
+      const { render, label, field, rules } = formItem;
+      return (
+        <FormItem key={index} label={label} field={field} rules={rules}>
+          {render ? render : <Input placeholder="请输入" allowClear />}
+        </FormItem>
+      );
+    });
+  };
+
   return (
     <>
       <Modal
@@ -175,14 +214,7 @@ const ModalForm = (props: ModalFormProps) => {
           }}
           initialValues={initialValues}
         >
-          {formItems.map((formItem, index) => {
-            const { render, label, field, rules } = formItem;
-            return (
-              <FormItem key={index} label={label} field={field} rules={rules}>
-                {render ? render : <Input placeholder="请输入" allowClear />}
-              </FormItem>
-            );
-          })}
+          {contentRender()}
         </Form>
       </Modal>
       {triggerDom}

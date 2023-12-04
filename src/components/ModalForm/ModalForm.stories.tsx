@@ -102,6 +102,7 @@ StaticRender.args = {
       )
     }
   ],
+  formCols: 2,
   onFinish: async values => {
     await waitTime(2000);
     console.log('onFinish: ', values);
