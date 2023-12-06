@@ -88,9 +88,7 @@ const ModalForm = (props: ModalFormProps) => {
   const formRef = useRef<FormInstance>(null);
 
   useEffect(() => {
-    if (propsOpen) {
-      setOpen(true);
-    }
+    setOpen(props?.open || false);
   }, [propsOpen]);
 
   useEffect(() => {

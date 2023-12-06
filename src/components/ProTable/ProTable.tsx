@@ -94,7 +94,7 @@ export interface ProTableProps {
   /**
    * 标题栏左侧按钮组
    */
-  leftBtns?: Array<ButtonProps & { key: string; label: string; render?: React.ReactElement; }>;
+  leftBtns?: Array<ButtonProps & { key: string; label: string; render?: React.ReactElement }>;
   /**
    * 标题栏右侧按钮组
    */
@@ -110,7 +110,7 @@ export interface ProTableProps {
   /**
    * 表格行是否可选
    */
-  propsRowSelection?: TableRowSelectionProps
+  propsRowSelection?: TableRowSelectionProps;
 }
 
 const { Title } = Typography;
@@ -149,9 +149,9 @@ const ProTable = (props: ProTableProps) => {
   );
   const [formParams, setFormParams] = useState(initialQueryParams || {});
   /** 单选多选相关逻辑 */
-  const [selectedRowKeys, setSelectedRowKeys] = useState<
-    (string | number)[] | undefined
-  >(propsRowSelection ? propsRowSelection?.selectedRowKeys || [] : undefined);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[] | undefined>(
+    propsRowSelection ? propsRowSelection?.selectedRowKeys || [] : undefined
+  );
 
   useEffect(() => {
     if (!request) return;
@@ -170,6 +170,8 @@ const ProTable = (props: ProTableProps) => {
     setLoading(true);
     try {
       const res = await request({ page: current, pageSize, ...formParams });
+      // 如果失败了, 直接返回, 不走剩下的逻辑
+      if (res.success === false) return [];
       setData(res.data.list);
       setPagination({
         ...pagination,
@@ -177,10 +179,11 @@ const ProTable = (props: ProTableProps) => {
         pageSize,
         total: res.data.total
       });
-      setLoading(false);
       onLoad?.(res.data);
     } catch (err) {
       console.error('Error: ', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -189,7 +192,7 @@ const ProTable = (props: ProTableProps) => {
   };
 
   const renderLeftBtns = () => {
-    return leftBtns?.map(btn => btn.render ? btn.render : <Button {...btn}>{btn.label}</Button>);
+    return leftBtns?.map(btn => (btn.render ? btn.render : <Button {...btn}>{btn.label}</Button>));
   };
 
   const renderRightBtns = () => {
@@ -221,7 +224,7 @@ const ProTable = (props: ProTableProps) => {
       }
       setSelectedRowKeys(selectedRowKeys);
     }
-  }
+  };
 
   // console.log('render ProTable: ', manualRequest);
 
