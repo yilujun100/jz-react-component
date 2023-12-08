@@ -95,6 +95,10 @@ const ModalForm = (props: ModalFormProps) => {
     onOpenChange?.(open);
   }, [open]);
 
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [JSON.stringify(initialValues)]);
+
   const handleOk = () => {
     formRef.current
       ?.validate()
