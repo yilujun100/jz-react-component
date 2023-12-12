@@ -23,14 +23,33 @@ export default meta;
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: StoryFn<typeof ModalForm> = args => {
   const [visible, setVisible] = useState(false);
+  const [initialValues, setInitialValues] = useState({
+    id: '123',
+    name: 'Juzi Component',
+    contentType: [0],
+    filterType: [0],
+    status: [0]
+  })
 
-  // console.log('ModalForm render: ', visible);
+  // console.log('ModalForm render: ', visible, initialValues);
   return (
     <>
       <Button type="primary" onClick={() => setVisible(!visible)}>
         受控模式
       </Button>
-      <ModalForm {...args} open={visible} onOpenChange={setVisible} />
+      <ModalForm
+        {...args}
+        open={visible}
+        onOpenChange={setVisible}
+        initialValues={initialValues}
+        onFinish={async values => {
+          await waitTime(2000);
+          console.log('onFinish: ', values);
+          setInitialValues(values);
+          Message.success('提交成功');
+          return true;
+        }}
+      />
     </>
   );
 };
@@ -102,18 +121,5 @@ StaticRender.args = {
       )
     }
   ],
-  formCols: 2,
-  onFinish: async values => {
-    await waitTime(2000);
-    console.log('onFinish: ', values);
-    Message.success('提交成功');
-    return true;
-  },
-  initialValues: {
-    id: '123',
-    name: 'Juzi Component',
-    contentType: [0],
-    filterType: [0],
-    status: [0]
-  }
+  formCols: 2
 };

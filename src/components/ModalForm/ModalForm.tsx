@@ -199,7 +199,7 @@ const ModalForm = (props: ModalFormProps) => {
           width
         }}
         afterClose={() => {
-          resetFields();
+          // resetFields();
           setOpen(false);
           props?.afterClose?.();
         }}
