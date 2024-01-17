@@ -12,6 +12,7 @@ export interface SearchFormProps {
   conditions: ConditionProps;
   searchText?: string;
   resetText?: string;
+  initialValues?: Partial<any>;
   onSearch: (values: Record<string, any>) => void;
 }
 
@@ -26,7 +27,7 @@ const SearchForm: ForwardRefRenderFunction<SearchFormHandle, SearchFormProps> = 
   useImperativeHandle(ref, () => ({
     form
   }));
-  const { limitNum = 3, colSpan = 6, conditions, searchText, resetText, onSearch } = props;
+  const { limitNum = 3, colSpan = 6, conditions, searchText, resetText, initialValues,  onSearch } = props;
   const [form] = useForm();
   const [collapsed, setCollapsed] = useState(true);
   const showCollapseButton = useMemo(() => {
@@ -45,7 +46,14 @@ const SearchForm: ForwardRefRenderFunction<SearchFormHandle, SearchFormProps> = 
 
   return (
     <div className="search-form-wrapper">
-      <Form form={form} className="search-form" labelAlign="left" labelCol={{ span: 7 }} wrapperCol={{ span: 17 }}>
+      <Form
+        form={form}
+        className="search-form"
+        labelAlign="left"
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
+        initialValues={initialValues}
+      >
         <Row gutter={24}>
           {conditions.map((condition, index) => {
             const { label, id, placeholder, render } = condition;

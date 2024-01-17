@@ -11,6 +11,7 @@ import {
   Button,
   Table
 } from '@arco-design/web-react';
+import { isEqual } from 'lodash';
 import SearchForm from './SearchForm';
 import './ProTable.less';
 
@@ -204,6 +205,9 @@ const ProTable = (props: ProTableProps) => {
       setPagination({ ...(pagination as Object), current: 1 });
     }
     setFormParams(params);
+    if (isEqual(params, formParams)) {
+      fetchData();
+    }
   };
 
   const onChangeTable = (pagination: PaginationProps) => {
@@ -239,6 +243,7 @@ const ProTable = (props: ProTableProps) => {
         conditions={conditions}
         onSearch={handleSearch}
         ref={formRef!}
+        initialValues={formParams}
       />
       <div className="button-group">
         <Space>{leftBtns && leftBtns.length > 0 && renderLeftBtns()}</Space>

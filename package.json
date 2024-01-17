@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.3.8",
+  "version": "0.3.9",
   "repository": {
     "type": "git",
     "url": "http://172.30.20.234/repository/jzsz-npm-public/"
@@ -36,6 +36,7 @@
     "@storybook/testing-library": "^0.2.0",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.4",
+    "@types/lodash": "^4.14.202",
     "@types/react": "^18.2.21",
     "babel-jest": "^29.6.4",
     "classnames": "^2.3.2",
@@ -59,6 +60,7 @@
   },
   "peerDependencies": {
     "@arco-design/web-react": "^2.52.2",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",

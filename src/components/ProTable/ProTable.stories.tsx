@@ -16,7 +16,7 @@ const FilterType = ['规则筛选', '人工'];
 const Status = ['未上线', '已上线'];
 
 const generateFormModel = () => ({
-  id: '',
+  id: '123',
   name: '',
   contentType: undefined,
   filterType: undefined,

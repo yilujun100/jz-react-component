@@ -8,6 +8,9 @@ dependencies:
   '@arco-design/web-react':
     specifier: ^2.52.2
     version: registry.npmmirror.com/@arco-design/web-react@2.54.0(@types/react@18.2.28)(react-dom@18.2.0)(react@18.2.0)
+  lodash:
+    specifier: ^4.17.21
+    version: registry.npmmirror.com/lodash@4.17.21
   react:
     specifier: ^18.2.0
     version: registry.npmmirror.com/react@18.2.0
@@ -79,6 +82,9 @@ devDependencies:
   '@types/jest':
     specifier: ^29.5.4
     version: registry.npmmirror.com/@types/jest@29.5.5
+  '@types/lodash':
+    specifier: ^4.14.202
+    version: registry.npmmirror.com/@types/lodash@4.14.202
   '@types/react':
     specifier: ^18.2.21
     version: registry.npmmirror.com/@types/react@18.2.28
@@ -3836,7 +3842,7 @@ packages:
       '@storybook/preview-api': registry.npmmirror.com/@storybook/preview-api@7.4.6
       '@storybook/theming': registry.npmmirror.com/@storybook/theming@7.4.6(react-dom@18.2.0)(react@18.2.0)
       '@storybook/types': registry.npmmirror.com/@storybook/types@7.4.6
-      '@types/lodash': registry.npmmirror.com/@types/lodash@4.14.199
+      '@types/lodash': registry.npmmirror.com/@types/lodash@4.14.202
       color-convert: registry.npmmirror.com/color-convert@2.0.1
       dequal: registry.npmmirror.com/dequal@2.0.3
       lodash: registry.npmmirror.com/lodash@4.17.21
@@ -5052,10 +5058,10 @@ packages:
     version: 7.0.13
     dev: true
 
-  registry.npmmirror.com/@types/lodash@4.14.199:
-    resolution: {integrity: sha512-Vrjz5N5Ia4SEzWWgIVwnHNEnb1UE1XMkvY5DGXrAeOGE9imk0hgTHh5GyDjLDJi9OTCn9oo9dXH1uToK1VRfrg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.199.tgz}
+  registry.npmmirror.com/@types/lodash@4.14.202:
+    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.202.tgz}
     name: '@types/lodash'
-    version: 4.14.199
+    version: 4.14.202
     dev: true
 
   registry.npmmirror.com/@types/mdx@2.0.8:

@@ -1,5 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import type { ForwardRefRenderFunction } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { FormItemProps, FormInstance, Grid, Modal, Form, Input } from '@arco-design/web-react';
+
+type ModalFormHandle = {
+  form: FormInstance<any>;
+};
 
 export interface ModalFormProps {
   /**
@@ -56,6 +61,10 @@ export interface ModalFormProps {
    * 弹框关闭之后的回调
    */
   afterClose?: () => void;
+  /**
+   * 关闭弹框是否重置表单
+   */
+  resetFields?: boolean;
 }
 
 const FormItem = Form.Item;
@@ -69,7 +78,10 @@ const formItemLayout = {
   }
 };
 
-const ModalForm = (props: ModalFormProps) => {
+const ModalForm: ForwardRefRenderFunction<ModalFormHandle, ModalFormProps> = (props, ref) => {
+  useImperativeHandle(ref, () => ({
+    form
+  }));
   const {
     title,
     width = 520,
@@ -165,10 +177,10 @@ const ModalForm = (props: ModalFormProps) => {
       return arrayChunk([...Array(formItems.length).keys()], formCols).map((row, i) => (
         <Grid.Row key={i} gutter={12}>
           {row.map(colIdx => {
-            const { render, label, field, rules } = formItems[colIdx];
+            const { render, label, field, rules, ...restProps } = formItems[colIdx];
             return (
               <Grid.Col key={colIdx} span={_span}>
-                <FormItem label={label} field={field} rules={rules}>
+                <FormItem label={label} field={field} rules={rules} {...restProps}>
                   {render ? render : <Input placeholder="请输入" allowClear />}
                 </FormItem>
               </Grid.Col>
@@ -178,9 +190,9 @@ const ModalForm = (props: ModalFormProps) => {
       ));
     }
     return formItems.map((formItem, index) => {
-      const { render, label, field, rules } = formItem;
+      const { render, label, field, rules, ...restProps } = formItem;
       return (
-        <FormItem key={index} label={label} field={field} rules={rules}>
+        <FormItem key={index} label={label} field={field} rules={rules} {...restProps}>
           {render ? render : <Input placeholder="请输入" allowClear />}
         </FormItem>
       );
@@ -199,7 +211,7 @@ const ModalForm = (props: ModalFormProps) => {
           width
         }}
         afterClose={() => {
-          // resetFields();
+          props?.resetFields && resetFields();
           setOpen(false);
           props?.afterClose?.();
         }}
@@ -224,4 +236,4 @@ const ModalForm = (props: ModalFormProps) => {
   );
 };
 
-export default ModalForm;
+export default forwardRef(ModalForm);

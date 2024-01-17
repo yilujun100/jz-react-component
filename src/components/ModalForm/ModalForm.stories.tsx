@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Select, Typography, Button, Message } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
 import type { StoryFn, Meta, StoryObj } from '@storybook/react';
@@ -22,6 +22,7 @@ export default meta;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: StoryFn<typeof ModalForm> = args => {
+  const formRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [initialValues, setInitialValues] = useState({
     id: '123',
@@ -34,11 +35,15 @@ const Template: StoryFn<typeof ModalForm> = args => {
   // console.log('ModalForm render: ', visible, initialValues);
   return (
     <>
-      <Button type="primary" onClick={() => setVisible(!visible)}>
+      <Button type="primary" onClick={() => {
+        setVisible(!visible);
+        console.log(formRef.current);
+      }}>
         受控模式
       </Button>
       <ModalForm
         {...args}
+        ref={formRef}
         open={visible}
         onOpenChange={setVisible}
         initialValues={initialValues}
@@ -73,7 +78,7 @@ StaticRender.args = {
     </Button>
   ), */
   formItems: [
-    { label: '集合编号', field: 'id', rules: [{ required: true, message: '请输入集合编号' }] },
+    { label: '集合编号', field: 'id', rules: [{ required: true, message: '请输入集合编号' }], disabled: true },
     { label: '集合名称', field: 'name', rules: [{ required: true, message: '请输入集合名称' }] },
     {
       label: '内容体裁',
