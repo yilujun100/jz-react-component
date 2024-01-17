@@ -3,10 +3,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.3.9",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
-    "url": "http://172.30.20.234/repository/jzsz-npm-public/"
+    "url": "https://github.com/yilujun100/jz-react-component"
   },
   "description": "A Juzi React component library",
   "scripts": {
