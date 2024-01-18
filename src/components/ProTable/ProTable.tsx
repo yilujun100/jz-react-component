@@ -95,7 +95,7 @@ export interface ProTableProps {
   /**
    * 标题栏左侧按钮组
    */
-  leftBtns?: Array<ButtonProps & { key: string; label: string; render?: React.ReactElement }>;
+  leftBtns?: Array<ButtonProps & { key: string; label: string; render?: React.ReactElement; show?: boolean; }>;
   /**
    * 标题栏右侧按钮组
    */
