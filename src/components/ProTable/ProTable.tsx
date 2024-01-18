@@ -193,7 +193,7 @@ const ProTable = (props: ProTableProps) => {
   };
 
   const renderLeftBtns = () => {
-    return leftBtns?.map(btn => (btn.render ? btn.render : <Button {...btn}>{btn.label}</Button>));
+    return leftBtns?.filter(btn => btn?.show).map(btn => (btn.render ? btn.render : <Button {...btn}>{btn.label}</Button>));
   };
 
   const renderRightBtns = () => {
