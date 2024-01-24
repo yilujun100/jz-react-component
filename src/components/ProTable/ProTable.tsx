@@ -21,7 +21,6 @@ export type ConditionProps = Array<{
   placeholder?: string;
   render?: React.ReactElement;
 }>;
-
 export interface ProTableProps {
   /**
    * 表格标题
@@ -93,6 +92,10 @@ export interface ProTableProps {
    */
   pagination?: PaginationProps;
   /**
+   * 分页、排序、筛选时的回调
+   */
+  onChange?: (pagination: PaginationProps) => void;
+  /**
    * 标题栏左侧按钮组
    */
   leftBtns?: Array<ButtonProps & { key: string; label: string; render?: React.ReactElement; show?: boolean; }>;
@@ -131,6 +134,7 @@ const ProTable = (props: ProTableProps) => {
     request,
     manualRequest,
     onLoad,
+    onChange,
     initialQueryParams,
     colSpan,
     limitNum,
@@ -211,12 +215,13 @@ const ProTable = (props: ProTableProps) => {
   };
 
   const onChangeTable = (pagination: PaginationProps) => {
-    const { current, pageSize } = pagination;
+    /* const { current, pageSize } = pagination;
     setPagination({
       ...pagination,
       current,
       pageSize
-    });
+    }); */
+    onChange && onChange(pagination);
   };
 
   const rowSelection: TableRowSelectionProps = {
