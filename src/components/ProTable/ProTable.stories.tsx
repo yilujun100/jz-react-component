@@ -274,13 +274,13 @@ StaticRender.args = {
   },
   initialQueryParams: generateFormModel(),
   showPagination: true,
-  pagination: {
+  /* pagination: {
     sizeCanChange: true,
     showTotal: true,
     pageSize: 10,
     current: 1,
     pageSizeChangeResetCurrent: true
-  },
+  }, */
   propsRowSelection: {
     type: 'checkbox',
     onChange: selectedRowKeys => {

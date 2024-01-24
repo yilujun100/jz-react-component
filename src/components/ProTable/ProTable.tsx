@@ -215,12 +215,12 @@ const ProTable = (props: ProTableProps) => {
   };
 
   const onChangeTable = (pagination: PaginationProps) => {
-    /* const { current, pageSize } = pagination;
+    const { current, pageSize } = pagination;
     setPagination({
       ...pagination,
       current,
       pageSize
-    }); */
+    });
     onChange && onChange(pagination);
   };
 
