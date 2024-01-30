@@ -178,7 +178,7 @@ StaticRender.args = {
       dataIndex: 'name',
       width: 160
     },
-    {
+    /* {
       title: '内容体裁',
       dataIndex: 'contentType',
       width: 100,
@@ -189,8 +189,8 @@ StaticRender.args = {
       dataIndex: 'filterType',
       width: 100,
       render: value => FilterType[value]
-    },
-    {
+    }, */
+    /* {
       title: '内容量',
       dataIndex: 'count',
       width: 100,
@@ -198,20 +198,20 @@ StaticRender.args = {
       render(x) {
         return Number(x).toLocaleString();
       }
-    },
+    }, */
     {
       title: '创建人',
       dataIndex: 'createName',
       width: 120
     },
-    {
+    /* {
       title: '创建时间',
       dataIndex: 'createdTime',
       width: 180,
       render: x => dayjs().subtract(x, 'days').format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a, b) => b.createdTime - a.createdTime
-    },
-    {
+    }, */
+    /* {
       title: '修改人',
       dataIndex: 'updateName',
       width: 120
@@ -222,10 +222,11 @@ StaticRender.args = {
       width: 180,
       render: x => dayjs().subtract(x, 'days').format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a, b) => b.createdTime - a.createdTime
-    },
+    }, */
     {
       title: '状态',
       dataIndex: 'status',
+      width: 120,
       render: x => {
         if (x === 0) {
           return <Badge status="error" text={Status[x]}></Badge>;
@@ -247,7 +248,7 @@ StaticRender.args = {
   data: [
     // { id: '40088683-4187', name: '每日推荐视频集',  contentType: 0, filterType: 0, count: '1136', createdTime: 1, status: 0 }
   ],
-  scroll: { x: 1500 },
+  // scroll: { x: 1200 },
   request: async params => {
     console.log('request: ', params);
     return await new Promise((resolve, reject) => {

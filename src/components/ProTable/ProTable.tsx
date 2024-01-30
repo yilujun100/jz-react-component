@@ -1,5 +1,5 @@
-import type { ReactNode, RefObject } from 'react';
-import React, { useState, useEffect } from 'react';
+import type { ReactNode, RefObject, SyntheticEvent } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import type { FormInstance, TableRowSelectionProps } from '@arco-design/web-react';
 import {
   TableColumnProps,
@@ -12,6 +12,7 @@ import {
   Table
 } from '@arco-design/web-react';
 import { isEqual } from 'lodash';
+import { Resizable, ResizeCallbackData } from 'react-resizable';
 import SearchForm from './SearchForm';
 import './ProTable.less';
 
@@ -126,7 +127,7 @@ const ProTable = (props: ProTableProps) => {
     searchText,
     resetText,
     rowKey,
-    columns,
+    columns: originColumns,
     scroll,
     leftBtns,
     rightBtns,
@@ -142,6 +143,21 @@ const ProTable = (props: ProTableProps) => {
     propsRowSelection
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
+  const [columns, setColumns] = useState(
+    originColumns.map((column, index) => {
+      if (column.width) {
+        return {
+          ...column,
+          onHeaderCell: (col: TableColumnProps) => ({
+            width: col.width,
+            onResize: handleResize(index)
+          })
+        };
+      }
+
+      return column;
+    })
+  );
   const [data, setData] = useState(props.data || []);
   const [pagination, setPagination] = useState<PaginationProps>(
     props.pagination || {
@@ -235,6 +251,58 @@ const ProTable = (props: ProTableProps) => {
     }
   };
 
+  const CustomResizeHandle = forwardRef((props: any, ref) => {
+    const { handleAxis, ...restProps } = props;
+    return (
+      <span
+        ref={ref}
+        className={`react-resizable-handle react-resizable-handle-${handleAxis}`}
+        {...restProps}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      />
+    );
+  });
+
+  const ResizableTitle = (props: any) => {
+    const { onResize, width, ...restProps } = props;
+
+    if (!width) {
+      return <th {...restProps} />;
+    }
+
+    return (
+      <Resizable
+        width={width}
+        height={0}
+        handle={<CustomResizeHandle />}
+        onResize={onResize}
+        draggableOpts={{
+          enableUserSelectHack: false,
+        }}
+      >
+        <th {...restProps} />
+      </Resizable>
+    );
+  };
+
+  const handleResize = (index: number) => {
+    return (e: SyntheticEvent, { size }: ResizeCallbackData) => {
+      setColumns(prevColumns => {
+        const nextColumns = [...prevColumns];
+        nextColumns[index] = { ...nextColumns[index], width: size.width };
+        return nextColumns;
+      });
+    };
+  };
+
+  const components = {
+    header: {
+      th: ResizableTitle
+    }
+  };
+
   // console.log('render ProTable: ', manualRequest);
 
   return (
@@ -255,6 +323,10 @@ const ProTable = (props: ProTableProps) => {
         <Space>{rightBtns && rightBtns.length > 0 && renderRightBtns()}</Space>
       </div>
       <Table
+        className="table-resizable-column"
+        components={components}
+        border
+        borderCell
         rowKey={rowKey}
         loading={loading}
         onChange={onChangeTable}
