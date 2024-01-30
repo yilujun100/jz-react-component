@@ -120,6 +120,42 @@ export interface ProTableProps {
 
 const { Title } = Typography;
 
+const CustomResizeHandle = forwardRef((props: any, ref) => {
+  const { handleAxis, ...restProps } = props;
+  return (
+    <span
+      ref={ref}
+      className={`react-resizable-handle react-resizable-handle-${handleAxis}`}
+      {...restProps}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    />
+  );
+});
+
+const ResizableTitle = (props: any) => {
+  const { onResize, width, ...restProps } = props;
+
+  if (!width) {
+    return <th {...restProps} />;
+  }
+
+  return (
+    <Resizable
+      width={width}
+      height={0}
+      handle={<CustomResizeHandle />}
+      onResize={onResize}
+      draggableOpts={{
+        enableUserSelectHack: false,
+      }}
+    >
+      <th {...restProps} />
+    </Resizable>
+  );
+};
+
 const ProTable = (props: ProTableProps) => {
   const {
     title,
@@ -256,42 +292,6 @@ const ProTable = (props: ProTableProps) => {
       }
       setSelectedRowKeys(selectedRowKeys);
     }
-  };
-
-  const CustomResizeHandle = forwardRef((props: any, ref) => {
-    const { handleAxis, ...restProps } = props;
-    return (
-      <span
-        ref={ref}
-        className={`react-resizable-handle react-resizable-handle-${handleAxis}`}
-        {...restProps}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      />
-    );
-  });
-
-  const ResizableTitle = (props: any) => {
-    const { onResize, width, ...restProps } = props;
-
-    if (!width) {
-      return <th {...restProps} />;
-    }
-
-    return (
-      <Resizable
-        width={width}
-        height={0}
-        handle={<CustomResizeHandle />}
-        onResize={onResize}
-        draggableOpts={{
-          enableUserSelectHack: false,
-        }}
-      >
-        <th {...restProps} />
-      </Resizable>
-    );
   };
 
   const handleResize = (index: number) => {
