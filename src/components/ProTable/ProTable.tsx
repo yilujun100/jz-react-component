@@ -143,21 +143,7 @@ const ProTable = (props: ProTableProps) => {
     propsRowSelection
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
-  const [columns, setColumns] = useState(
-    originColumns.map((column, index) => {
-      if (column.width) {
-        return {
-          ...column,
-          onHeaderCell: (col: TableColumnProps) => ({
-            width: col.width,
-            onResize: handleResize(index)
-          })
-        };
-      }
-
-      return column;
-    })
-  );
+  const [columns, setColumns] = useState<TableColumnProps[]>([]);
   const [data, setData] = useState(props.data || []);
   const [pagination, setPagination] = useState<PaginationProps>(
     props.pagination || {
@@ -173,6 +159,27 @@ const ProTable = (props: ProTableProps) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[] | undefined>(
     propsRowSelection ? propsRowSelection?.selectedRowKeys || [] : undefined
   );
+
+  useEffect(() => {
+    if (!originColumns.length) {
+      return;
+    }
+    setColumns(
+      originColumns.map((column, index) => {
+        if (column.width) {
+          return {
+            ...column,
+            onHeaderCell: (col: TableColumnProps) => ({
+              width: col.width,
+              onResize: handleResize(index)
+            })
+          };
+        }
+
+        return column;
+      })
+    );
+  }, [JSON.stringify(originColumns)]);
 
   useEffect(() => {
     if (!request) return;
