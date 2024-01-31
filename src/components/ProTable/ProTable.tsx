@@ -258,9 +258,6 @@ const ProTable = (props: ProTableProps) => {
         <Space>{rightBtns && rightBtns.length > 0 && renderRightBtns()}</Space>
       </div>
       <Table
-        className="table-resizable-column"
-        border
-        borderCell
         rowKey={rowKey}
         loading={loading}
         onChange={onChangeTable}
