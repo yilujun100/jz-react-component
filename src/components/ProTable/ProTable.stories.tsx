@@ -176,9 +176,11 @@ StaticRender.args = {
     {
       title: '集合名称',
       dataIndex: 'name',
-      width: 160
+      width: 120,
+      ellipsis: true,
+      render: value => <Text copyable>{value}</Text>
     },
-    /* {
+    {
       title: '内容体裁',
       dataIndex: 'contentType',
       width: 100,
@@ -189,7 +191,7 @@ StaticRender.args = {
       dataIndex: 'filterType',
       width: 100,
       render: value => FilterType[value]
-    }, */
+    },
     /* {
       title: '内容量',
       dataIndex: 'count',
@@ -263,6 +265,15 @@ StaticRender.args = {
                 contentType: 0,
                 filterType: 0,
                 count: '1136',
+                createdTime: 1,
+                status: 0
+              },
+              {
+                id: '67112831-5884',
+                name: '抖音短视频候选集',
+                contentType: 0,
+                filterType: 0,
+                count: '91',
                 createdTime: 1,
                 status: 0
               }

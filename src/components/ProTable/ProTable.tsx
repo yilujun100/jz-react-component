@@ -1,5 +1,5 @@
-import type { ReactNode, RefObject, SyntheticEvent } from 'react';
-import React, { forwardRef, useState, useEffect } from 'react';
+import type { ReactNode, RefObject } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { FormInstance, TableRowSelectionProps } from '@arco-design/web-react';
 import {
   TableColumnProps,
@@ -9,10 +9,12 @@ import {
   Typography,
   Space,
   Button,
-  Table
+  Table,
+  Tooltip,
+  Message
 } from '@arco-design/web-react';
 import { isEqual } from 'lodash';
-import { Resizable, ResizeCallbackData } from 'react-resizable';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import SearchForm from './SearchForm';
 import './ProTable.less';
 
@@ -118,43 +120,7 @@ export interface ProTableProps {
   propsRowSelection?: TableRowSelectionProps;
 }
 
-const { Title } = Typography;
-
-const CustomResizeHandle = forwardRef((props: any, ref) => {
-  const { handleAxis, ...restProps } = props;
-  return (
-    <span
-      ref={ref}
-      className={`react-resizable-handle react-resizable-handle-${handleAxis}`}
-      {...restProps}
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-    />
-  );
-});
-
-const ResizableTitle = (props: any) => {
-  const { onResize, width, ...restProps } = props;
-
-  if (!width) {
-    return <th {...restProps} />;
-  }
-
-  return (
-    <Resizable
-      width={width}
-      height={0}
-      handle={<CustomResizeHandle />}
-      onResize={onResize}
-      draggableOpts={{
-        enableUserSelectHack: false,
-      }}
-    >
-      <th {...restProps} />
-    </Resizable>
-  );
-};
+const { Title, Text } = Typography;
 
 const ProTable = (props: ProTableProps) => {
   const {
@@ -163,7 +129,7 @@ const ProTable = (props: ProTableProps) => {
     searchText,
     resetText,
     rowKey,
-    columns: originColumns,
+    columns,
     scroll,
     leftBtns,
     rightBtns,
@@ -179,7 +145,6 @@ const ProTable = (props: ProTableProps) => {
     propsRowSelection
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
-  const [columns, setColumns] = useState<TableColumnProps[]>([]);
   const [data, setData] = useState(props.data || []);
   const [pagination, setPagination] = useState<PaginationProps>(
     props.pagination || {
@@ -195,27 +160,6 @@ const ProTable = (props: ProTableProps) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[] | undefined>(
     propsRowSelection ? propsRowSelection?.selectedRowKeys || [] : undefined
   );
-
-  useEffect(() => {
-    if (!originColumns.length) {
-      return;
-    }
-    setColumns(
-      originColumns.map((column, index) => {
-        if (column.width) {
-          return {
-            ...column,
-            onHeaderCell: (col: TableColumnProps) => ({
-              width: col.width,
-              onResize: handleResize(index)
-            })
-          };
-        }
-
-        return column;
-      })
-    );
-  }, [JSON.stringify(originColumns)]);
 
   useEffect(() => {
     if (!request) return;
@@ -294,22 +238,6 @@ const ProTable = (props: ProTableProps) => {
     }
   };
 
-  const handleResize = (index: number) => {
-    return (e: SyntheticEvent, { size }: ResizeCallbackData) => {
-      setColumns(prevColumns => {
-        const nextColumns = [...prevColumns];
-        nextColumns[index] = { ...nextColumns[index], width: size.width };
-        return nextColumns;
-      });
-    };
-  };
-
-  const components = {
-    header: {
-      th: ResizableTitle
-    }
-  };
-
   // console.log('render ProTable: ', manualRequest);
 
   return (
@@ -331,14 +259,36 @@ const ProTable = (props: ProTableProps) => {
       </div>
       <Table
         className="table-resizable-column"
-        components={components}
         border
         borderCell
         rowKey={rowKey}
         loading={loading}
         onChange={onChangeTable}
         pagination={showPagination ? pagination : false}
-        columns={columns}
+        columns={columns.map(col => {
+          if (col.ellipsis) {
+            return {
+              ...col,
+              render: col.render ? col.render : value => (
+                <Tooltip content={value} position="tl" trigger="hover">
+                  <CopyToClipboard
+                    text={value}
+                    onCopy={() => {
+                      Message.success('复制成功');
+                    }}
+                  >
+                    <Text
+                      style={{ width: '100%', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                    >
+                      {value}
+                    </Text>
+                  </CopyToClipboard>
+                </Tooltip>
+              )
+            }
+          }
+          return col;
+        })}
         data={data}
         scroll={scroll || { x: false, y: false }}
         rowSelection={propsRowSelection ? rowSelection : undefined}
