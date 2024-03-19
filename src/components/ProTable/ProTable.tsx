@@ -208,11 +208,13 @@ const ProTable = (props: ProTableProps) => {
   };
 
   const handleSearch = (params: any) => {
-    if (showPagination) {
-      setPagination({ ...(pagination as Object), current: 1 });
-    }
+    setPagination({ ...(pagination as Object), current: 1 });
     setFormParams(params);
-    if (isEqual(params, formParams)) {
+    const newPageInfo = {
+      ...pagination,
+      current: 1
+    };
+    if (isEqual(params, formParams) && isEqual(newPageInfo, pagination)) {
       fetchData();
     }
   };

@@ -278,7 +278,7 @@ StaticRender.args = {
                 status: 0
               }
             ],
-            total: 1
+            total: 2
           }
         });
       }, 2000);
@@ -289,7 +289,7 @@ StaticRender.args = {
   pagination: {
     sizeCanChange: true,
     showTotal: true,
-    pageSize: 10,
+    pageSize: 1,
     current: 1,
     pageSizeChangeResetCurrent: true
   },
