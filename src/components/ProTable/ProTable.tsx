@@ -177,7 +177,7 @@ const ProTable = (props: ProTableProps) => {
     const { current, pageSize } = pagination;
     setLoading(true);
     try {
-      const res = await request({ page: current, pageSize, ...formParams });
+      const res = await request({ ...formParams, page: current, pageSize });
       // 如果失败了, 直接返回, 不走剩下的逻辑
       if (res.success === false) return [];
       setData(res.data.list);
@@ -251,7 +251,7 @@ const ProTable = (props: ProTableProps) => {
         conditions={conditions}
         onSearch={handleSearch}
         ref={formRef!}
-        initialValues={formParams}
+        initialValues={initialQueryParams}
       />
       <div className="button-group">
         <Space>{leftBtns && leftBtns.length > 0 && renderLeftBtns()}</Space>
