@@ -41,9 +41,30 @@ const SearchForm: ForwardRefRenderFunction<SearchFormHandle, SearchFormProps> = 
 
   const handleReset = () => {
     form.resetFields();
+    // 手动清空
+    const fieldsValue = form.getFieldsValue();
+    if (hasNonEmptyValue(fieldsValue)) {
+      Object.entries(fieldsValue).filter(([key, val]) => val !== null && val !== undefined && val !== '').forEach(item => {
+        const [key] = item
+        form.setFieldValue(key, '');
+      })
+    }
     props.onSearch({});
   };
 
+  const hasNonEmptyValue = (obj: {[key: string]: any}) => {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const value = obj[key]
+        if (value !== null && value !== undefined && value !== '') {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // console.log('render SearchForm: ', form.getFieldsValue());
   return (
     <div className="search-form-wrapper">
       <Form

@@ -240,7 +240,7 @@ const ProTable = (props: ProTableProps) => {
     }
   };
 
-  // console.log('render ProTable: ', manualRequest);
+  // console.log('render ProTable: ', manualRequest, initialQueryParams, formParams);
 
   return (
     <Card>

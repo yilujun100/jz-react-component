@@ -19,8 +19,8 @@ const generateFormModel = () => ({
   id: '123',
   name: '',
   contentType: undefined,
-  filterType: undefined,
-  createdTime: undefined,
+  filterType: [1],
+  createdTime: ['2024-03-01', '2024-03-03'],
   status: undefined
 });
 
